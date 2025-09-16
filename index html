@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Senhas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: #E0E0E0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        .container {
+            background-color: #1E1E1E;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            width: 100%;
+        }
+        .title {
+            color: #4CAF50;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+        .control-group {
+            margin-bottom: 1.5rem;
+        }
+        .label {
+            font-weight: 500;
+            color: #BDBDBD;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        input[type="range"] {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 8px;
+            background: #424242;
+            border-radius: 5px;
+            outline: none;
+            transition: background 0.2s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #4CAF50;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-item input[type="checkbox"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid #616161;
+            border-radius: 0.5rem;
+            margin-right: 0.75rem;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .checkbox-item input[type="checkbox"]:checked {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+        .checkbox-item input[type="checkbox"]:checked::after {
+            content: '✔';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #1E1E1E;
+            font-size: 0.8rem;
+        }
+        .btn {
+            width: 100%;
+            padding: 1rem 0;
+            background-color: #4CAF50;
+            color: #1E1E1E;
+            font-weight: 700;
+            border-radius: 1rem;
+            transition: background-color 0.2s, transform 0.1s;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+        }
+        .btn:hover {
+            background-color: #5cb85c;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .password-display-container {
+            display: flex;
+            align-items: center;
+            background-color: #2D2D2D;
+            border-radius: 1rem;
+            padding: 0.75rem 1rem;
+            margin-top: 1.5rem;
+        }
+        #password-display {
+            flex-grow: 1;
+            background-color: transparent;
+            border: none;
+            color: #E0E0E0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .copy-btn {
+            background-color: #424242;
+            color: #E0E0E0;
+            padding: 0.5rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border: none;
+        }
+        .copy-btn:hover {
+            background-color: #616161;
+        }
+        .copy-btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="title">Gerador de Senhas</h1>
+        
+        <div class="control-group">
+            <label for="length" class="label">Comprimento da Senha: <span id="length-value">12</span></label>
+            <input type="range" id="length" min="4" max="32" value="12">
+        </div>
+
+        <div class="control-group">
+            <label class="label">Tipos de Caracteres:</label>
+            <div class="checkbox-group">
+                <label class="checkbox-item">
+                    <input type="checkbox" id="uppercase" checked> Letras Maiúsculas (A-Z)
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="lowercase" checked> Letras Minúsculas (a-z)
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="numbers" checked> Números (0-9)
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="symbols" checked> Símbolos (!@#$%)
+                </label>
+            </div>
+        </div>
+
+        <button id="generate-btn" class="btn">Gerar Senha</button>
+
+        <div class="password-display-container">
+            <input type="text" id="password-display" readonly>
+            <button id="copy-btn" class="copy-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7 19.5H19V7h-3V5h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-3h2v3a.5.5 0 0 0 .5.5H19a.5.5 0 0 0 .5-.5V7a.5.5 0 0 0-.5-.5h-2V7h3a.5.5 0 0 1 .5.5V19a.5.5 0 0 1-.5.5H7.5a.5.5 0 0 1-.5-.5V19zM16 3H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3V5a2 2 0 0 1 2-2h6zm0 2h-6v12h6V5z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const lengthInput = document.getElementById('length');
+        const lengthValueSpan = document.getElementById('length-value');
+        const uppercaseCheckbox = document.getElementById('uppercase');
+        const lowercaseCheckbox = document.getElementById('lowercase');
+        const numbersCheckbox = document.getElementById('numbers');
+        const symbolsCheckbox = document.getElementById('symbols');
+        const generateBtn = document.getElementById('generate-btn');
+        const passwordDisplay = document.getElementById('password-display');
+        const copyBtn = document.getElementById('copy-btn');
+
+        // Character sets
+        const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+        const numbersChars = '0123456789';
+        const symbolsChars = '!@#$%^&*()_+~`|}{[]:;?><,./-=';
+
+        // Update length value display on input change
+        lengthInput.addEventListener('input', () => {
+            lengthValueSpan.textContent = lengthInput.value;
+        });
+
+        // Function to generate the password
+        function generatePassword() {
+            let password = '';
+            let characters = '';
+            const length = lengthInput.value;
+
+            if (uppercaseCheckbox.checked) characters += uppercaseChars;
+            if (lowercaseCheckbox.checked) characters += lowercaseChars;
+            if (numbersCheckbox.checked) characters += numbersChars;
+            if (symbolsCheckbox.checked) characters += symbolsChars;
+
+            if (characters === '') {
+                // Handle case where no character type is selected
+                passwordDisplay.value = 'Selecione pelo menos um tipo de caractere!';
+                return;
+            }
+
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * characters.length);
+                password += characters[randomIndex];
+            }
+
+            passwordDisplay.value = password;
+        }
+
+        // Generate password on button click
+        generateBtn.addEventListener('click', generatePassword);
+
+        // Copy password to clipboard
+        copyBtn.addEventListener('click', () => {
+            passwordDisplay.select();
+            passwordDisplay.setSelectionRange(0, 99999); // For mobile devices
+            try {
+                // document.execCommand('copy') is a legacy method but works reliably in this environment
+                document.execCommand('copy');
+                alert('Senha copiada para a área de transferência!');
+            } catch (err) {
+                console.error('Falha ao copiar a senha: ', err);
+            }
+        });
+
+        // Initial password generation on page load
+        generatePassword();
+    </script>
+
+</body>
+</html>
